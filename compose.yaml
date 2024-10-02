@@ -1,0 +1,133 @@
+services:
+  # tasks
+  tasks-web-ui:
+    build:
+      context: ./tasks-web-ui
+      dockerfile: Dockerfile
+      target: dev
+    env_file: ./tasks-web-ui/.env
+    volumes:
+      - ./tasks-web-ui:/app
+    ports:
+      - 4000:5173
+  tasks:
+    build:
+      context: ./tasks
+      dockerfile: Dockerfile
+      target: dev
+    env_file: ./tasks/.env
+    volumes:
+      - ./tasks:/app
+    ports:
+      - 3000:3000
+    depends_on:
+      tasks-db:
+        condition: service_healthy
+      message-broker:
+        condition: service_healthy
+  tasks-db:
+    build:
+      context: ./tasks-db
+      dockerfile: Dockerfile
+    volumes:
+      - tasks-db-data:/var/lib/postgresql/data
+    env_file: ./tasks-db/.env
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+
+  # orders
+  orders-web-ui:
+    build:
+      context: ./orders-web-ui
+      dockerfile: Dockerfile
+      target: dev
+    env_file: ./orders-web-ui/.env
+    volumes:
+      - ./orders-web-ui:/app
+    ports:
+      - 4001:5173
+  orders:
+    build:
+      context: ./orders
+      dockerfile: Dockerfile
+      target: dev
+    env_file: ./orders/.env
+    volumes:
+      - ./orders:/app
+    ports:
+      - 3001:3000
+    depends_on:
+      orders-db:
+        condition: service_healthy
+      message-broker:
+        condition: service_healthy
+  orders-db:
+    build:
+      context: ./orders-db
+      dockerfile: Dockerfile
+    env_file: ./orders-db/.env
+    volumes:
+      - orders-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+
+  # products
+  products:
+    build:
+      context: ./products
+      dockerfile: Dockerfile
+      target: dev
+    env_file: ./products/.env
+    volumes:
+      - ./products:/app
+    ports:
+      - 3002:3000
+    depends_on:
+      products-db:
+        condition: service_healthy
+  products-db:
+    build:
+      context: ./products-db
+      dockerfile: Dockerfile
+    env_file: ./products-db/.env
+    volumes:
+      - products-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+
+  # other
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    env_file: ./api-gateway/.env
+    ports:
+      - 6000:80
+  message-broker:
+    build:
+      context: ./message-broker
+      dockerfile: Dockerfile
+    env_file: ./message-broker/.env
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/localhost/5672'
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  tasks-db-data:
+  orders-db-data:
+  products-db-data:
