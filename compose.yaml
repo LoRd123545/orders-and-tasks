@@ -18,8 +18,6 @@ services:
     env_file: ./tasks/.env
     volumes:
       - ./tasks:/app
-    ports:
-      - 3000:3000
     depends_on:
       tasks-db:
         condition: service_healthy
@@ -58,8 +56,6 @@ services:
     env_file: ./orders/.env
     volumes:
       - ./orders:/app
-    ports:
-      - 3001:3000
     depends_on:
       orders-db:
         condition: service_healthy
@@ -88,8 +84,6 @@ services:
     env_file: ./products/.env
     volumes:
       - ./products:/app
-    ports:
-      - 3002:3000
     depends_on:
       products-db:
         condition: service_healthy
