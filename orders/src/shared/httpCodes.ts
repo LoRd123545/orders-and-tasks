@@ -1,0 +1,12 @@
+const httpCodes = {
+  NOT_FOUND: 404,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  OK: 200,
+  EMPTY_RESPONE: 204,
+  CREATED_RESOURCE: 201,
+  INTERNAL_SERVER_ERROR: 500,
+} as const;
+
+export { httpCodes };
