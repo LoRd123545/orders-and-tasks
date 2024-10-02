@@ -113,8 +113,16 @@ services:
       context: ./api-gateway
       dockerfile: Dockerfile
     env_file: ./api-gateway/.env
+    volumes:
+      - type: bind
+        source: ./api-gateway/etc/nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+      - type: bind
+        source: ./api-gateway/etc/nginx/proxy_params
+        target: /etc/nginx/proxy_params
+      - ./api-gateway/html:/usr/share/nginx/html
     ports:
-      - 6000:80
+      - 80:80
   message-broker:
     build:
       context: ./message-broker

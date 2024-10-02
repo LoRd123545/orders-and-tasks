@@ -38,6 +38,7 @@ const app = express();
 const server = createServer(app);
 
 // middleware
+app.use(middleware.logUrls);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -47,7 +48,7 @@ app.get('/healthcheck', (req, res) => {
 
 app.use('/v1', appRouter, middleware.handleErrors);
 
-server.listen(PORT || 3000, () => {
+server.listen(PORT, () => {
   console.log(`http server listening on port ${PORT}`);
 });
 
