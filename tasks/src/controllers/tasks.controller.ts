@@ -9,10 +9,10 @@ const find = async (req: Request, res: Response, next: NextFunction) => {
     const tasks = await tasksService.find();
 
     if (tasks.length === 0) {
-      return res.sendStatus(httpCodes.EMPTY_RESPONE);
+      res.sendStatus(httpCodes.EMPTY_RESPONE);
     }
 
-    return res.json(tasks);
+    res.json(tasks);
   } catch (err) {
     next(err);
   }
@@ -23,7 +23,7 @@ const findOne = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const task = await tasksService.findOne(id);
-    return res.json(task);
+    res.json(task);
   } catch (err) {
     next(err);
   }
