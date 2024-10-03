@@ -112,8 +112,8 @@ services:
         source: ./api-gateway/etc/nginx/nginx.conf
         target: /etc/nginx/nginx.conf
       - type: bind
-        source: ./api-gateway/etc/nginx/proxy_params
-        target: /etc/nginx/proxy_params
+        source: ./api-gateway/etc/nginx/proxy_params.conf
+        target: /etc/nginx/proxy_params.conf
       - ./api-gateway/html:/usr/share/nginx/html
     ports:
       - 80:80
