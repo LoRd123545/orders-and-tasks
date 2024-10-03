@@ -40,7 +40,6 @@ export class OrderModel extends Model<Order, InferCreationAttributes<OrderModel>
   declare status: CreationOptional<string>
 
   @Attribute(DataTypes.STRING(500))
-  @Unique
   @NotNull
   declare email: string
 
