@@ -4,6 +4,10 @@ import ordersModel from '@app/models/order.model.js';
 
 import { NotFoundError } from '@app/shared/errors/index.js';
 
+import { channel } from '@app/index.js';
+
+const { AMQP_EXCHANGE } = process.env;
+
 const find = async (): Promise<Order[]> => {
   try {
     const orders = await ordersModel.find();
@@ -33,6 +37,10 @@ const findOne = async (id: string): Promise<Order> => {
 const create = async (order: CreateOrderDto): Promise<Order> => {
   try {
     const newOrder = await ordersModel.create(order);
+
+    const exchange = AMQP_EXCHANGE || 'orders';
+    channel.publish(exchange, '', Buffer.from(JSON.stringify(newOrder)));
+
     return newOrder;
   } catch (err) {
     throw err;

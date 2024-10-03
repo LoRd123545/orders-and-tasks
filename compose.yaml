@@ -23,6 +23,12 @@ services:
         condition: service_healthy
       message-broker:
         condition: service_healthy
+    healthcheck:
+      test: curl -f localhost/healthcheck
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
   tasks-db:
     build:
       context: ./tasks-db
@@ -61,6 +67,12 @@ services:
         condition: service_healthy
       message-broker:
         condition: service_healthy
+    healthcheck:
+      test: curl -f localhost/healthcheck
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
   orders-db:
     build:
       context: ./orders-db
@@ -87,6 +99,12 @@ services:
     depends_on:
       products-db:
         condition: service_healthy
+    healthcheck:
+      test: curl -f localhost/healthcheck
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
   products-db:
     build:
       context: ./products-db
@@ -117,6 +135,13 @@ services:
       - ./api-gateway/html:/usr/share/nginx/html
     ports:
       - 80:80
+    depends_on:
+      tasks:
+        condition: service_healthy
+      products:
+        condition: service_healthy
+      orders:
+        condition: service_healthy
   message-broker:
     build:
       context: ./message-broker

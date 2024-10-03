@@ -5,6 +5,7 @@ import express from 'express';
 import middleware from '@app/middleware/index.js';
 
 import database from '@app/config/database.js';
+import messageBroker from '@app/config/messageBroker.js';
 
 import { httpCodes } from '@app/shared/index.js';
 
@@ -13,6 +14,8 @@ import appRouter from '@app/routes/index.js';
 import { DatabaseError } from '@app/shared/errors/index.js';
 
 const { PORT, NODE_ENV } = process.env;
+
+export const channel = await messageBroker.init();
 
 try {
   await database.authenticate();

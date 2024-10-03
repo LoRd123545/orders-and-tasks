@@ -6,6 +6,8 @@ WORKDIR /app
 
 FROM base as dev
 
+RUN apk add curl
+
 ENV NODE_ENV=development
 
 COPY package.json package-lock.json ./

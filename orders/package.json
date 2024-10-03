@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/amqplib": "^0.10.5",
     "@types/express": "^5.0.0",
     "@types/node": "^22.7.4",
     "@types/sequelize": "^4.28.20",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@sequelize/core": "^7.0.0-alpha.42",
     "@sequelize/postgres": "^7.0.0-alpha.42",
+    "amqplib": "^0.10.4",
     "express": "^4.21.0"
   }
 }

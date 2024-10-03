@@ -5,6 +5,7 @@ import express from 'express';
 import middleware from '@app/middleware/index.js';
 
 import database from '@app/config/database.js';
+import messageBroker from '@app/config/messageBroker.js';
 
 import { httpCodes } from '@app/shared/index.js';
 
@@ -12,7 +13,22 @@ import appRouter from '@app/routes/index.js';
 
 import { DatabaseError } from '@app/shared/errors/index.js';
 
-const { PORT, NODE_ENV } = process.env;
+const { PORT, NODE_ENV, AMQP_EXCHANGE } = process.env;
+
+const channel = await messageBroker.init();
+
+const queuePromise = channel.assertQueue('', { exclusive: true });
+
+queuePromise.then((q) => {
+  const bindQueuePromise = channel.bindQueue(q.queue, AMQP_EXCHANGE || 'orders', '')
+  bindQueuePromise.then(() => {
+    channel.consume(q.queue, (msg) => {
+      console.log(msg?.content.toString())
+    }, {
+      noAck: true,
+    })
+  })
+})
 
 try {
   await database.authenticate();
