@@ -13,6 +13,8 @@ import appRouter from '@app/routes/index.js';
 
 import { DatabaseError } from '@app/shared/errors/index.js';
 
+import tasksService from './services/tasks.service.js';
+
 const { PORT, NODE_ENV, AMQP_EXCHANGE } = process.env;
 
 const channel = await messageBroker.init();
@@ -23,7 +25,16 @@ queuePromise.then((q) => {
   const bindQueuePromise = channel.bindQueue(q.queue, AMQP_EXCHANGE || 'orders', '')
   bindQueuePromise.then(() => {
     channel.consume(q.queue, (msg) => {
-      console.log(msg?.content.toString())
+      if (msg) {
+        const order = JSON.parse(msg.content.toString());
+        console.log(order);
+        tasksService.create({
+          name: `order-id-${order.id}`
+        }).then((task) => {
+          console.log('Task created!');
+          console.log(task);
+        });
+      }
     }, {
       noAck: true,
     })
