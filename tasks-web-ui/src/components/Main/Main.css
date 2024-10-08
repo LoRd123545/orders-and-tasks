@@ -1,0 +1,28 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+
+.main__add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main__add > input {
+  padding: 0.5em;
+  border: 2px solid #cbd5e1;
+  outline: none;
+}
+
+.main__add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main__add-btn:hover {
+  transform: scale(1.3);
+}
