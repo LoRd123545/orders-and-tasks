@@ -1,0 +1,28 @@
+.create-form {
+  display: flex;
+  gap: 0.5em;
+  flex-direction: column;
+}
+
+.create-form__submit-btn {
+  background-color: #16a34a;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.25em;
+}
+
+.create-form__submit-btn:hover {
+  background-color: #059239;
+}
+
+.create-form > div > input {
+  border: 2px solid #cbd5e1;
+  padding: 0.5em;
+  border-radius: 0.25em;
+}
+
+.create-form > div > select {
+  border: 2px solid #cbd5e1;
+  padding: 0.5em;
+  border-radius: 0.25em;
+}
