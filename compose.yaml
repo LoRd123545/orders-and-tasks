@@ -8,6 +8,7 @@ services:
     env_file: ./tasks-web-ui/.env
     volumes:
       - ./tasks-web-ui:/app
+      - /app/node_modules
     ports:
       - 4000:5173
   tasks:
@@ -18,6 +19,7 @@ services:
     env_file: ./tasks/.env
     volumes:
       - ./tasks:/app
+      - /app/node_moduless
     depends_on:
       tasks-db:
         condition: service_healthy
@@ -52,6 +54,7 @@ services:
     env_file: ./orders-web-ui/.env
     volumes:
       - ./orders-web-ui:/app
+      - /app/node_modules
     ports:
       - 4001:5173
   orders:
@@ -62,6 +65,7 @@ services:
     env_file: ./orders/.env
     volumes:
       - ./orders:/app
+      - /app/node_modules
     depends_on:
       orders-db:
         condition: service_healthy
@@ -96,6 +100,7 @@ services:
     env_file: ./products/.env
     volumes:
       - ./products:/app
+      - /app/node_modules
     depends_on:
       products-db:
         condition: service_healthy
