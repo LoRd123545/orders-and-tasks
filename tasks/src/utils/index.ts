@@ -1,5 +1,4 @@
-import { getJsonError } from "./getJsonError.js";
+import { getJsonError } from './getJsonError.js';
+import { ifUndefinedDelete } from './ifUndefinedDelete.js';
 
-export {
-  getJsonError,
-}
+export { getJsonError, ifUndefinedDelete };
