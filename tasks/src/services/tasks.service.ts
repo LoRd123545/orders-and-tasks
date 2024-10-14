@@ -1,17 +1,23 @@
-import { Task, UpdateTaskDto, CreateTaskDto } from '@app/types/tasks/index.js';
+import {
+  Task,
+  UpdateTaskDto,
+  CreateTaskDto,
+  TaskFindOptions,
+} from '@app/types/tasks/index.js';
 
 import tasksModel from '@app/models/tasks.model.js';
 
 import { NotFoundError } from '@app/shared/errors/index.js';
 
-const find = async (): Promise<Task[]> => {
+const find = async (options: TaskFindOptions): Promise<Task[]> => {
   try {
-    const tasks = await tasksModel.find();
+    console.log(options);
+    const tasks = await tasksModel.find(options);
     return tasks;
   } catch (err) {
     throw err;
   }
-}
+};
 
 const findOne = async (id: string): Promise<Task> => {
   try {
@@ -28,7 +34,7 @@ const findOne = async (id: string): Promise<Task> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 const create = async (task: CreateTaskDto): Promise<Task> => {
   try {
@@ -37,7 +43,7 @@ const create = async (task: CreateTaskDto): Promise<Task> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 const update = async (id: string, newTask: UpdateTaskDto): Promise<null> => {
   try {
@@ -61,7 +67,7 @@ const update = async (id: string, newTask: UpdateTaskDto): Promise<null> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 const remove = async (id: string): Promise<null> => {
   try {
@@ -79,7 +85,7 @@ const remove = async (id: string): Promise<null> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 export default {
   find,
@@ -87,4 +93,4 @@ export default {
   create,
   update,
   remove,
-}
+};
