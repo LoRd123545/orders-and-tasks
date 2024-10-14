@@ -2,7 +2,9 @@ import {
   Model,
   DataTypes,
   InferCreationAttributes,
-  CreationOptional, sql
+  CreationOptional,
+  sql,
+  FindOptions as SequelizeFindOptions,
 } from '@sequelize/core';
 
 import {
@@ -18,7 +20,15 @@ import {
 
 import { DatabaseError } from '@app/shared/errors/index.js';
 
-import { Task, UpdateTaskDto, CreateTaskDto, Status } from '@app/types/tasks/index.js';
+import {
+  Task,
+  UpdateTaskDto,
+  CreateTaskDto,
+  Status,
+  TaskFindOptions,
+} from '@app/types/tasks/index.js';
+
+import { ifUndefinedDelete } from '@app/utils/ifUndefinedDelete.js';
 
 @Table({
   tableName: 'tasks',
@@ -28,46 +38,59 @@ export class TaskModel extends Model<Task, InferCreationAttributes<TaskModel>> {
   @NotNull
   @PrimaryKey
   @Default(sql.uuidV4)
-  declare id: CreationOptional<string>
+  declare id: CreationOptional<string>;
 
   @Attribute(DataTypes.STRING(50))
   @NotNull
   @Unique
-  declare name: string
+  declare name: string;
 
   @Attribute(DataTypes.STRING(500))
-  declare description: CreationOptional<string>
+  declare description: CreationOptional<string>;
 
   @Attribute(DataTypes.STRING(50))
   @NotNull
   @Default(Status.NOT_STARTED)
-  declare status: CreationOptional<string>
+  declare status: CreationOptional<string>;
 
-  @Attribute(DataTypes.DATE)
-  @Default((Date.now() + 60 * 60 * 24)) // current date + 1 day
-  declare dueTo: CreationOptional<Date>
+  @Attribute({
+    type: 'TIMESTAMPTZ',
+  })
+  @Default(new Date(Date.now() + 1000 * 60 * 60 * 24)) // current date + 1 day
+  declare dueTo: CreationOptional<Date>;
 
   @CreatedAt
-  declare createdAt: CreationOptional<Date>
+  declare createdAt: CreationOptional<Date>;
 
   @UpdatedAt
-  declare updatedAt: CreationOptional<Date>
+  declare updatedAt: CreationOptional<Date>;
 }
 
-const find = async (): Promise<Task[]> => {
+const find = async (options: TaskFindOptions): Promise<Task[]> => {
+  const { limit, offset, orderBy, sortBy, where } = options;
+
+  ifUndefinedDelete(where);
+
+  const queryOptions: SequelizeFindOptions<Task> = {
+    where: where,
+    order: [[orderBy || 'createdAt', sortBy || 'desc']],
+    limit: limit || 10,
+    offset: offset || 0,
+  };
+
   try {
-    const result = await TaskModel.findAll();
+    const result = await TaskModel.findAll(queryOptions);
     return result.map((task) => task.dataValues);
   } catch (err) {
-    const message = 'Failed to find tasks'
+    const message = 'Failed to find tasks';
     throw new DatabaseError(message, '', err, true);
   }
-}
+};
 
 const findOne = async (id: string): Promise<Task | null> => {
   try {
     const result = await TaskModel.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!result) {
@@ -76,46 +99,46 @@ const findOne = async (id: string): Promise<Task | null> => {
 
     return result.dataValues;
   } catch (err) {
-    const message = 'Failed to find task'
+    const message = 'Failed to find task';
     throw new DatabaseError(message, '', err, true);
   }
-}
+};
 
 const create = async (task: CreateTaskDto): Promise<Task> => {
   try {
     const result = await TaskModel.create(task);
     return result.dataValues;
   } catch (err) {
-    const message = 'Failed to create task'
+    const message = 'Failed to create task';
     throw new DatabaseError(message, '', err, true);
   }
-}
+};
 
 const update = async (id: string, newTask: UpdateTaskDto): Promise<null> => {
   try {
     await TaskModel.update(newTask, {
-      where: { id }
+      where: { id },
     });
 
     return null;
   } catch (err) {
-    const message = 'Failed to update task'
+    const message = 'Failed to update task';
     throw new DatabaseError(message, '', err, true);
   }
-}
+};
 
 const remove = async (id: string): Promise<null> => {
   try {
     const result = await TaskModel.destroy({
-      where: { id }
+      where: { id },
     });
 
     return null;
   } catch (err) {
-    const message = 'Failed to remove task'
+    const message = 'Failed to remove task';
     throw new DatabaseError(message, '', err, true);
   }
-}
+};
 
 export default {
   find,
@@ -123,4 +146,4 @@ export default {
   create,
   update,
   remove,
-}
+};
