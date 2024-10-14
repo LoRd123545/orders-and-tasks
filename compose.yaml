@@ -124,6 +124,39 @@ services:
       retries: 5
       start_period: 20s
 
+  # reports
+  reports:
+    build:
+      context: ./reports
+      dockerfile: Dockerfile
+      target: dev
+    env_file: ./products/.env
+    volumes:
+      - ./reports:/app
+      - /app/node_modules
+    depends_on:
+      reports-db:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f localhost/healthcheck
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  reports-db:
+    build:
+      context: ./reports-db
+      dockerfile: Dockerfile
+    env_file: ./reports-db/.env
+    volumes:
+      - reports-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+
   # other
   api-gateway:
     build:
@@ -163,3 +196,4 @@ volumes:
   tasks-db-data:
   orders-db-data:
   products-db-data:
+  reports-db-data:
