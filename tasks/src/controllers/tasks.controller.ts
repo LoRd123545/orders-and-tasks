@@ -62,8 +62,10 @@ const findOne = async (req: Request, res: Response, next: NextFunction) => {
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   const newTask: CreateTaskDto = {
-    name: `task-${Math.floor(Math.random() * 10)}`,
-    dueTo: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    name: req.body.name || `task-${Math.floor(Math.random() * 10000)}`,
+    dueTo:
+      req.body.dueTo ||
+      new Date(Date.now() + 1000 * 60 * 60 * 24) /* current date + 1 day */,
   };
 
   try {
