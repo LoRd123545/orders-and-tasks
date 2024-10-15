@@ -10,6 +10,9 @@ router.get('/', tasksController.find);
 // GET /:id <- get one task
 router.get('/:id', tasksController.findOne);
 
+// POST /filters <- filter tasks
+router.post('/filters', tasksController.filter);
+
 // POST / <- create task
 router.post('/', tasksController.create);
 
