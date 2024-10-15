@@ -53,10 +53,7 @@ export class TaskModel extends Model<Task, InferCreationAttributes<TaskModel>> {
   @Default(Status.NOT_STARTED)
   declare status: CreationOptional<string>;
 
-  @Attribute({
-    type: 'TIMESTAMPTZ',
-  })
-  @Default(new Date(Date.now() + 1000 * 60 * 60 * 24)) // current date + 1 day
+  @Attribute(DataTypes.DATE)
   declare dueTo: CreationOptional<Date>;
 
   @CreatedAt
@@ -68,8 +65,6 @@ export class TaskModel extends Model<Task, InferCreationAttributes<TaskModel>> {
 
 const find = async (options: TaskFindOptions): Promise<Task[]> => {
   const { limit, offset, orderBy, sortBy, where } = options;
-
-  ifUndefinedDelete(where);
 
   const queryOptions: SequelizeFindOptions<Task> = {
     where: where,

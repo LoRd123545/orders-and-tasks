@@ -3,25 +3,41 @@ import { Request, Response, NextFunction } from 'express';
 import tasksService from '@app/services/tasks.service.js';
 
 import { httpCodes } from '@app/shared/index.js';
+import { CreateTaskDto } from '@app/types/tasks/CreateTaskDto.js';
 
 const find = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const tasks = await tasksService.find({
-      limit: req.query.limit ? parseInt(req.query.limit.toString()) : undefined,
-      offset: req.query.offset
-        ? parseInt(req.query.offset.toString())
-        : undefined,
-      orderBy: req.query.orderBy?.toString(),
-      sortBy: req.query.sortBy?.toString() === 'asc' ? 'asc' : 'desc',
-      where: {
-        dueTo: req.query.dueTo
-          ? new Date(req.query.dueTo.toString())
-          : undefined,
-        description: req.query.description?.toString(),
-        name: req.query.name?.toString(),
-        status: req.query.status?.toString(),
-      },
-    });
+    const tasks = await tasksService.find({ where: {} });
+
+    if (tasks.length === 0) {
+      res.sendStatus(httpCodes.EMPTY_RESPONE);
+    }
+
+    res.json(tasks);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const filter = async (req: Request, res: Response, next: NextFunction) => {
+  /**
+   * filters schema:
+   * {
+   *  limit?: number,
+   *  offset?: number,
+   *  orderBy?: string,
+   *  sortBy?: 'asc' | 'desc',
+   *  where: {
+   *    dueTo?: Date,
+   *    description?: string,
+   *    name?: string,
+   *    status?: string,
+   *  }
+   * }
+   */
+
+  try {
+    const tasks = await tasksService.find(req.body);
 
     if (tasks.length === 0) {
       res.sendStatus(httpCodes.EMPTY_RESPONE);
@@ -45,7 +61,10 @@ const findOne = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
-  const newTask = req.body;
+  const newTask: CreateTaskDto = {
+    name: `task-${Math.floor(Math.random() * 10)}`,
+    dueTo: new Date(Date.now() + 1000 * 60 * 60 * 24),
+  };
 
   try {
     const task = await tasksService.create(newTask);
@@ -84,4 +103,5 @@ export default {
   create,
   update,
   remove,
+  filter,
 };

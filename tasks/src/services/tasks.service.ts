@@ -11,7 +11,6 @@ import { NotFoundError } from '@app/shared/errors/index.js';
 
 const find = async (options: TaskFindOptions): Promise<Task[]> => {
   try {
-    console.log(options);
     const tasks = await tasksModel.find(options);
     return tasks;
   } catch (err) {
