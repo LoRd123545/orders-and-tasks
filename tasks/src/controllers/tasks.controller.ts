@@ -6,8 +6,15 @@ import { httpCodes } from '@app/shared/index.js';
 import { CreateTaskDto } from '@app/types/tasks/CreateTaskDto.js';
 
 const find = async (req: Request, res: Response, next: NextFunction) => {
+  const { limit, page, sortBy, orderBy } = req.query;
+
   try {
-    const tasks = await tasksService.find({ where: {} });
+    const tasks = await tasksService.find({
+      limit: limit ? parseInt(limit.toString()) : 10,
+      page: page ? parseInt(page.toString()) : 0,
+      sortBy: sortBy?.toString() === 'asc' ? 'asc' : 'desc',
+      orderBy: orderBy?.toString(),
+    });
 
     if (tasks.length === 0) {
       res.sendStatus(httpCodes.EMPTY_RESPONE);
@@ -20,22 +27,6 @@ const find = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const filter = async (req: Request, res: Response, next: NextFunction) => {
-  /**
-   * filters schema:
-   * {
-   *  limit?: number,
-   *  offset?: number,
-   *  orderBy?: string,
-   *  sortBy?: 'asc' | 'desc',
-   *  where: {
-   *    dueTo?: Date,
-   *    description?: string,
-   *    name?: string,
-   *    status?: string,
-   *  }
-   * }
-   */
-
   try {
     const tasks = await tasksService.find(req.body);
 
@@ -63,9 +54,9 @@ const findOne = async (req: Request, res: Response, next: NextFunction) => {
 const create = async (req: Request, res: Response, next: NextFunction) => {
   const newTask: CreateTaskDto = {
     name: req.body.name || `task-${Math.floor(Math.random() * 10000)}`,
-    dueTo:
-      req.body.dueTo ||
-      new Date(Date.now() + 1000 * 60 * 60 * 24) /* current date + 1 day */,
+    dueTo: req.body.dueTo
+      ? new Date(req.body.dueTo)
+      : new Date(Date.now() + 1000 * 60 * 60 * 24) /* current date + 1 day */,
   };
 
   try {
