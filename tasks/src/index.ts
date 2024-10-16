@@ -22,24 +22,34 @@ const channel = await messageBroker.init();
 const queuePromise = channel.assertQueue('', { exclusive: true });
 
 queuePromise.then((q) => {
-  const bindQueuePromise = channel.bindQueue(q.queue, AMQP_EXCHANGE || 'orders', '')
+  const bindQueuePromise = channel.bindQueue(
+    q.queue,
+    AMQP_EXCHANGE || 'orders',
+    ''
+  );
   bindQueuePromise.then(() => {
-    channel.consume(q.queue, (msg) => {
-      if (msg) {
-        const order = JSON.parse(msg.content.toString());
-        console.log(order);
-        tasksService.create({
-          name: `order-id-${order.id}`
-        }).then((task) => {
-          console.log('Task created!');
-          console.log(task);
-        });
+    channel.consume(
+      q.queue,
+      (msg) => {
+        if (msg) {
+          const order = JSON.parse(msg.content.toString());
+          console.log(order);
+          tasksService
+            .create({
+              name: `order-id-${order.id}`,
+            })
+            .then((task) => {
+              console.log('Task created!');
+              console.log(task);
+            });
+        }
+      },
+      {
+        noAck: true,
       }
-    }, {
-      noAck: true,
-    })
-  })
-})
+    );
+  });
+});
 
 try {
   await database.authenticate();
@@ -71,15 +81,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/healthcheck', (req, res) => {
   res.sendStatus(httpCodes.EMPTY_RESPONE);
-})
+});
 
 app.use('/v1', appRouter, middleware.handleErrors);
 
 app.use('*', (req, res) => {
   res.status(httpCodes.NOT_FOUND).json({
-    message: 'What are you looking for bruh'
+    message: 'What are you looking for bruh',
   });
-})
+});
 
 server.listen(PORT, () => {
   console.log(`http server listening on port ${PORT}`);
@@ -90,13 +100,11 @@ const gracefulShutdown = () => {
   server.close(async () => {
     server.closeAllConnections();
     console.log('Closed all connections!');
-    await database.close()
+    await database.close();
     console.log('Closed connection to database!');
     process.exit(0);
   });
-}
-
-process.on('uncaughtException', gracefulShutdown);
+};
 
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
