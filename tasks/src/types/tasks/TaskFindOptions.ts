@@ -1,4 +1,4 @@
 import { FindOptions } from '@app/types/options/index.js';
-import { Task } from './Task.js';
+import { TaskFilters } from './TaskFilters.js';
 
-export type TaskFindOptions = FindOptions<Partial<Task>>;
+export type TaskFindOptions = FindOptions<Partial<TaskFilters>>;
