@@ -11,6 +11,9 @@ services:
       - /app/node_modules
     ports:
       - 4000:5173
+    depends_on:
+      api-gateway:
+        condition: service_healthy
   tasks:
     build:
       context: ./tasks
@@ -27,9 +30,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: curl -f localhost/healthcheck
-      interval: 10s
       timeout: 10s
-      retries: 5
       start_period: 30s
   tasks-db:
     build:
@@ -40,7 +41,6 @@ services:
     env_file: ./tasks-db/.env
     healthcheck:
       test: ['CMD', 'pg_isready']
-      interval: 10s
       timeout: 30s
       retries: 5
       start_period: 20s
@@ -57,6 +57,9 @@ services:
       - /app/node_modules
     ports:
       - 4001:5173
+    depends_on:
+      api-gateway:
+        condition: service_healthy
   orders:
     build:
       context: ./orders
@@ -73,9 +76,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: curl -f localhost/healthcheck
-      interval: 10s
       timeout: 10s
-      retries: 5
       start_period: 30s
   orders-db:
     build:
@@ -86,7 +87,6 @@ services:
       - orders-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD', 'pg_isready']
-      interval: 10s
       timeout: 30s
       retries: 5
       start_period: 20s
@@ -106,9 +106,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: curl -f localhost/healthcheck
-      interval: 10s
       timeout: 10s
-      retries: 5
       start_period: 30s
   products-db:
     build:
@@ -119,7 +117,6 @@ services:
       - products-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD', 'pg_isready']
-      interval: 10s
       timeout: 30s
       retries: 5
       start_period: 20s
@@ -139,9 +136,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: curl -f localhost/healthcheck
-      interval: 10s
       timeout: 10s
-      retries: 5
       start_period: 30s
   reports-db:
     build:
@@ -152,7 +147,6 @@ services:
       - reports-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD', 'pg_isready']
-      interval: 10s
       timeout: 30s
       retries: 5
       start_period: 20s
@@ -180,6 +174,11 @@ services:
         condition: service_healthy
       orders:
         condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost
+      retries: 2
+      timeout: 10s
+      start_period: 30s
   message-broker:
     build:
       context: ./message-broker
@@ -187,7 +186,6 @@ services:
     env_file: ./message-broker/.env
     healthcheck:
       test: timeout 10s bash -c ':> /dev/tcp/localhost/5672'
-      interval: 10s
       timeout: 30s
       retries: 5
       start_period: 30s
