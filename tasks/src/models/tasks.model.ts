@@ -5,6 +5,7 @@ import {
   CreationOptional,
   sql,
   FindOptions as SequelizeFindOptions,
+  Op,
 } from '@sequelize/core';
 
 import {
@@ -27,8 +28,7 @@ import {
   Status,
   TaskFindOptions,
 } from '@app/types/tasks/index.js';
-
-import { ifUndefinedDelete } from '@app/utils/ifUndefinedDelete.js';
+import { TaskFilters } from '@app/types/tasks/TaskFilters.js';
 
 @Table({
   tableName: 'tasks',
@@ -63,14 +63,62 @@ export class TaskModel extends Model<Task, InferCreationAttributes<TaskModel>> {
   declare updatedAt: CreationOptional<Date>;
 }
 
+function getSequelizeWhere(where?: Partial<TaskFilters>) {
+  const newWhere: Record<string, any> | undefined = where;
+
+  if (!(where && newWhere)) {
+    return undefined;
+  }
+
+  if (!where.createdAt || !where.updatedAt || !where.dueTo) {
+    return where;
+  }
+
+  const createdAt = where.createdAt;
+  const updatedAt = where.updatedAt;
+  const dueTo = where.dueTo;
+
+  if (!(typeof createdAt === 'string')) {
+    const obj = {
+      [Op.gte]: createdAt.start,
+      [Op.lte]: createdAt.end,
+    };
+
+    newWhere.createdAt = obj;
+  }
+
+  if (!(typeof dueTo === 'string')) {
+    const obj = {
+      [Op.gte]: dueTo.start,
+      [Op.lte]: dueTo.end,
+    };
+
+    newWhere.dueTo = obj;
+  }
+
+  if (!(typeof updatedAt === 'string')) {
+    const obj = {
+      [Op.gte]: updatedAt.start,
+      [Op.lte]: updatedAt.end,
+    };
+
+    newWhere.updatedAt = obj;
+  }
+
+  return newWhere;
+}
+
 const find = async (options: TaskFindOptions): Promise<Task[]> => {
-  const { limit, offset, orderBy, sortBy, where } = options;
+  const page = options?.page || 0;
+  const limit = options?.limit || 10;
+
+  const newWhere = getSequelizeWhere(options.where);
 
   const queryOptions: SequelizeFindOptions<Task> = {
-    where: where,
-    order: [[orderBy || 'createdAt', sortBy || 'desc']],
-    limit: limit || 10,
-    offset: offset || 0,
+    where: newWhere,
+    order: [[options.orderBy || 'createdAt', options.sortBy || 'desc']],
+    limit,
+    offset: page * limit,
   };
 
   try {
