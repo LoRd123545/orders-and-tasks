@@ -66,6 +66,12 @@ export class TaskModel extends Model<Task, InferCreationAttributes<TaskModel>> {
 function getSequelizeWhere(where?: Partial<TaskFilters>) {
   const newWhere: Record<string, any> | undefined = where;
 
+  const beginningOfTheMonth = new Date();
+  beginningOfTheMonth.setUTCDate(1);
+
+  const endOfTheMonth = new Date();
+  endOfTheMonth.setUTCDate(28);
+
   if (!(where && newWhere)) {
     return undefined;
   }
@@ -75,8 +81,8 @@ function getSequelizeWhere(where?: Partial<TaskFilters>) {
 
     if (!(typeof createdAt === 'string')) {
       const obj = {
-        [Op.gte]: createdAt.start,
-        [Op.lte]: createdAt.end,
+        [Op.gte]: createdAt.start || beginningOfTheMonth.toISOString(),
+        [Op.lte]: createdAt.end || endOfTheMonth.toISOString(),
       };
 
       newWhere.createdAt = obj;
@@ -88,8 +94,8 @@ function getSequelizeWhere(where?: Partial<TaskFilters>) {
 
     if (!(typeof dueTo === 'string')) {
       const obj = {
-        [Op.gte]: dueTo.start,
-        [Op.lte]: dueTo.end,
+        [Op.gte]: dueTo.start || beginningOfTheMonth.toISOString(),
+        [Op.lte]: dueTo.end || endOfTheMonth.toISOString(),
       };
 
       newWhere.dueTo = obj;
@@ -101,8 +107,8 @@ function getSequelizeWhere(where?: Partial<TaskFilters>) {
 
     if (!(typeof updatedAt === 'string')) {
       const obj = {
-        [Op.gte]: updatedAt.start,
-        [Op.lte]: updatedAt.end,
+        [Op.gte]: updatedAt.start || beginningOfTheMonth.toISOString(),
+        [Op.lte]: updatedAt.end || endOfTheMonth.toISOString(),
       };
 
       newWhere.updatedAt = obj;
@@ -117,6 +123,8 @@ const find = async (options: TaskFindOptions): Promise<Task[]> => {
   const limit = options?.limit || 10;
 
   const newWhere = getSequelizeWhere(options.where);
+
+  console.log(newWhere);
 
   const queryOptions: SequelizeFindOptions<Task> = {
     where: newWhere,
