@@ -10,6 +10,9 @@ router.get('/', ordersController.find);
 // GET /:id <- get one order
 router.get('/:id', ordersController.findOne);
 
+// POST /filters <- filter orders
+router.post('/filters', ordersController.filter);
+
 // POST / <- create order
 router.post('/', ordersController.create);
 

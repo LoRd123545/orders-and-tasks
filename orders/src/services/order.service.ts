@@ -1,4 +1,9 @@
-import { Order, UpdateOrderDto, CreateOrderDto } from '@app/types/orders/index.js';
+import {
+  Order,
+  UpdateOrderDto,
+  CreateOrderDto,
+  OrderFindOptions,
+} from '@app/types/orders/index.js';
 
 import ordersModel from '@app/models/order.model.js';
 
@@ -8,14 +13,14 @@ import { channel } from '@app/index.js';
 
 const { AMQP_EXCHANGE } = process.env;
 
-const find = async (): Promise<Order[]> => {
+const find = async (options: OrderFindOptions): Promise<Order[]> => {
   try {
-    const orders = await ordersModel.find();
+    const orders = await ordersModel.find(options);
     return orders;
   } catch (err) {
     throw err;
   }
-}
+};
 
 const findOne = async (id: string): Promise<Order> => {
   try {
@@ -32,7 +37,7 @@ const findOne = async (id: string): Promise<Order> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 const create = async (order: CreateOrderDto): Promise<Order> => {
   try {
@@ -45,7 +50,7 @@ const create = async (order: CreateOrderDto): Promise<Order> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 const update = async (id: string, newOrder: UpdateOrderDto): Promise<null> => {
   try {
@@ -68,7 +73,7 @@ const update = async (id: string, newOrder: UpdateOrderDto): Promise<null> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 const remove = async (id: string): Promise<null> => {
   try {
@@ -86,7 +91,7 @@ const remove = async (id: string): Promise<null> => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 export default {
   find,
@@ -94,4 +99,4 @@ export default {
   create,
   update,
   remove,
-}
+};
