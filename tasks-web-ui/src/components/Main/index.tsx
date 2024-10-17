@@ -6,7 +6,7 @@ import { Task } from 'src/types';
 
 export default function Main() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [taskName, setTaskName] = useState('task');
+  const [taskName, setTaskName] = useState('');
 
   useEffect(() => {
     taskService
