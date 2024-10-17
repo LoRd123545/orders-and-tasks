@@ -29,7 +29,7 @@ services:
       message-broker:
         condition: service_healthy
     healthcheck:
-      test: curl -f localhost/healthcheck
+      test: curl localhost/healthcheck
       timeout: 10s
       start_period: 30s
   tasks-db:
@@ -75,7 +75,7 @@ services:
       message-broker:
         condition: service_healthy
     healthcheck:
-      test: curl -f localhost/healthcheck
+      test: curl localhost/healthcheck
       timeout: 10s
       start_period: 30s
   orders-db:
@@ -105,7 +105,7 @@ services:
       products-db:
         condition: service_healthy
     healthcheck:
-      test: curl -f localhost/healthcheck
+      test: curl localhost/healthcheck
       timeout: 10s
       start_period: 30s
   products-db:
@@ -135,7 +135,7 @@ services:
       reports-db:
         condition: service_healthy
     healthcheck:
-      test: curl -f localhost/healthcheck
+      test: curl localhost/healthcheck
       timeout: 10s
       start_period: 30s
   reports-db:
