@@ -22,7 +22,7 @@ services:
     env_file: ./tasks/.env
     volumes:
       - ./tasks:/app
-      - /app/node_moduless
+      - /app/node_modules
     depends_on:
       tasks-db:
         condition: service_healthy
