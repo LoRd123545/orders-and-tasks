@@ -70,39 +70,43 @@ function getSequelizeWhere(where?: Partial<TaskFilters>) {
     return undefined;
   }
 
-  if (!where.createdAt || !where.updatedAt || !where.dueTo) {
-    return where;
+  if (where.createdAt) {
+    const createdAt = where.createdAt;
+
+    if (!(typeof createdAt === 'string')) {
+      const obj = {
+        [Op.gte]: createdAt.start,
+        [Op.lte]: createdAt.end,
+      };
+
+      newWhere.createdAt = obj;
+    }
   }
 
-  const createdAt = where.createdAt;
-  const updatedAt = where.updatedAt;
-  const dueTo = where.dueTo;
+  if (where.dueTo) {
+    const dueTo = where.dueTo;
 
-  if (!(typeof createdAt === 'string')) {
-    const obj = {
-      [Op.gte]: createdAt.start,
-      [Op.lte]: createdAt.end,
-    };
+    if (!(typeof dueTo === 'string')) {
+      const obj = {
+        [Op.gte]: dueTo.start,
+        [Op.lte]: dueTo.end,
+      };
 
-    newWhere.createdAt = obj;
+      newWhere.dueTo = obj;
+    }
   }
 
-  if (!(typeof dueTo === 'string')) {
-    const obj = {
-      [Op.gte]: dueTo.start,
-      [Op.lte]: dueTo.end,
-    };
+  if (where.updatedAt) {
+    const updatedAt = where.updatedAt;
 
-    newWhere.dueTo = obj;
-  }
+    if (!(typeof updatedAt === 'string')) {
+      const obj = {
+        [Op.gte]: updatedAt.start,
+        [Op.lte]: updatedAt.end,
+      };
 
-  if (!(typeof updatedAt === 'string')) {
-    const obj = {
-      [Op.gte]: updatedAt.start,
-      [Op.lte]: updatedAt.end,
-    };
-
-    newWhere.updatedAt = obj;
+      newWhere.updatedAt = obj;
+    }
   }
 
   return newWhere;
