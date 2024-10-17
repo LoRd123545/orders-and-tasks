@@ -9,7 +9,7 @@ If you don't have that you can follow this [guide](https://docs.docker.com/get-s
 
 In every folder there is .env.template file. In those files there are envoriment variables that are needed by application. Here's what to do:
 
-- in variables where there is asterisk symbol remove it and substitute given data with your own(you can make something up, it doesn't matter)
+- in variables where there is asterisk symbol remove it
 
 - remove .template extension from every .env.template file
 
