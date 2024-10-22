@@ -1,0 +1,24 @@
+{
+  "name": "emails",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts --clear-screen=true",
+    "prod": "node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "mailersend": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/mailgun-js": "^0.22.18",
+    "@types/node": "^22.7.6",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}
