@@ -3,10 +3,11 @@ import TaskList from '../TaskList';
 import { useEffect, useState } from 'react';
 import taskService from 'src/api/tasks';
 import { Task } from 'src/types';
+import ReportCreationForm from '../ReportCreationForm';
+import TaskCreationForm from '../TaskCreationForm';
 
 export default function Main() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [taskName, setTaskName] = useState('');
 
   useEffect(() => {
     taskService
@@ -41,43 +42,10 @@ export default function Main() {
       });
   }
 
-  function handleCreate(name: string) {
-    taskService
-      .create({ name })
-      .then((task) => {
-        setTasks((prev) => {
-          const newTasks = [...prev];
-          newTasks.push(task);
-          return newTasks;
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-
   return (
     <main className="main">
-      <div className="main__add">
-        <input
-          type="text"
-          name=""
-          id=""
-          onChange={(e) => {
-            e.preventDefault();
-            setTaskName(e.target.value);
-          }}
-        />
-        <button
-          className="main__add-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            handleCreate(taskName);
-          }}
-        >
-          <img src="/icons/add.svg" alt="" />
-        </button>
-      </div>
+      <TaskCreationForm setTasks={setTasks} />
+      <ReportCreationForm />
       <TaskList
         tasks={tasks}
         handleDelete={handleDelete}

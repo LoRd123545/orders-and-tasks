@@ -1,8 +1,8 @@
-import { Task } from 'src/types';
+import { Report } from 'src/types';
 
-async function find(): Promise<Task[]> {
+async function find(): Promise<Report[]> {
   return new Promise((acc, rej) => {
-    fetch('http://localhost/api/tasks/v1/tasks')
+    fetch('http://localhost/api/reports/v1/reports')
       .then((response) => {
         return response.json();
       })

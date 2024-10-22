@@ -11,7 +11,7 @@
   justify-content: center;
 }
 
-.main__add > input {
+input {
   padding: 0.5em;
   border: 2px solid #cbd5e1;
   outline: none;

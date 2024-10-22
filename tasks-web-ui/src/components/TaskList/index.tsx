@@ -17,11 +17,10 @@ export default function TaskList({
   for (const task of tasks) {
     list.push(
       <Task
-        name={task.name}
+        task={task}
         key={task.id}
         handleDelete={handleDelete}
         handleUpdate={handleUpdate}
-        id={task.id}
       />
     );
   }

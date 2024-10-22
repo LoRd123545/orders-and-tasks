@@ -1,0 +1,45 @@
+.btn {
+  background-color: #16a34a;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.25em;
+}
+
+.btn:hover {
+  background-color: #059239;
+}
+
+.report-creation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+  gap: 1em;
+}
+
+.statuses {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 1em;
+}
+
+.status {
+  display: flex;
+  gap: 0.5em;
+}
+
+.dates {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 1em;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}

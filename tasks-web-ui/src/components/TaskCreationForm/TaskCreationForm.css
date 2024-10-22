@@ -1,0 +1,15 @@
+.task-creation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-creation-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-creation-btn:hover {
+  transform: scale(1.3);
+}
