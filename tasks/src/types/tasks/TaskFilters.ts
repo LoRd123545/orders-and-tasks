@@ -1,3 +1,5 @@
+import { Status } from './Status.js';
+
 type DateFilters =
   | string
   | {
@@ -8,7 +10,7 @@ type DateFilters =
 export type TaskFilters = {
   dueTo: DateFilters;
   name: string;
-  status: string;
+  status: string | [Status.IN_PROGRESS, Status.COMPLETED, Status.NOT_STARTED];
   createdAt: DateFilters;
   updatedAt: DateFilters;
   id: string;

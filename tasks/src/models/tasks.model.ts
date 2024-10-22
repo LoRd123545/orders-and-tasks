@@ -29,6 +29,7 @@ import {
   TaskFindOptions,
 } from '@app/types/tasks/index.js';
 import { TaskFilters } from '@app/types/tasks/TaskFilters.js';
+import { openSync } from 'fs';
 
 @Table({
   tableName: 'tasks',
@@ -74,6 +75,14 @@ function getSequelizeWhere(where?: Partial<TaskFilters>) {
 
   if (!(where && newWhere)) {
     return undefined;
+  }
+
+  if (Array.isArray(where.status)) {
+    const statuses = where.status;
+
+    newWhere.status = {
+      [Op.in]: statuses,
+    };
   }
 
   if (where.createdAt) {

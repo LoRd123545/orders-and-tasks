@@ -57,6 +57,8 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     dueTo: req.body.dueTo
       ? new Date(req.body.dueTo)
       : new Date(Date.now() + 1000 * 60 * 60 * 24) /* current date + 1 day */,
+    status: req.body.status,
+    description: req.body.description,
   };
 
   try {
