@@ -127,7 +127,7 @@ services:
       context: ./reports
       dockerfile: Dockerfile
       target: dev
-    env_file: ./products/.env
+    env_file: ./reports/.env
     volumes:
       - ./reports:/app
       - /app/node_modules
@@ -150,6 +150,21 @@ services:
       timeout: 30s
       retries: 5
       start_period: 20s
+
+  # emails
+  emails:
+    build:
+      context: ./emails
+      dockerfile: Dockerfile
+      target: dev
+    env_file: ./emails/.env
+    volumes:
+      - ./emails:/app
+      - /app/node_modules
+    healthcheck:
+      test: curl localhost/healthcheck
+      timeout: 10s
+      start_period: 30s
 
   # other
   api-gateway:
