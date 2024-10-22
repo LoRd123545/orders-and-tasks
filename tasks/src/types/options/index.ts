@@ -1,3 +1,3 @@
-import { FindOptions } from "./FindOptions.js";
+import { FindOptions } from './FindOptions.js';
 
-export {FindOptions}
+export { FindOptions };

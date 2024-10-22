@@ -27,8 +27,9 @@ const find = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const filter = async (req: Request, res: Response, next: NextFunction) => {
+  const filters = req.body;
   try {
-    const tasks = await tasksService.find(req.body);
+    const tasks = await tasksService.find(filters);
 
     if (tasks.length === 0) {
       res.sendStatus(httpCodes.EMPTY_RESPONE);
