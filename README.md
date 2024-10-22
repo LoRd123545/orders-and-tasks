@@ -19,16 +19,16 @@ After you are done with steps above, simply run `docker compose up -d` command i
 
 There are 3 ports exposed:
 
-- 4000
-- 4001
-- 80
+- 4000 - tasks app
+- 4001 - orders app
+- 80 - reverse proxy
 
-4000 - app to manage tasks
-4001 - app to manage orders
-80 - reverse proxy (further documentation in future)
+# DOCUMENTATION
+
+Documentation is in the [docs](./docs/reference.md) folder.
 
 # NEXT STEPS
 
-Do whatevery you want. This project is completly open source, so experiment, play and fork it.
+Do whatever you want. This project is completly open source, so experiment, play and fork it.
 Small note with link to this repository would be appreciated but it isn't necessary.
 Enjoy!
