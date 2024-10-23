@@ -12,7 +12,7 @@ const validateBySchema = (schema: ZodSchema, whatToValidate: keyof Request) => {
       if (!result.success) {
         throw new HttpError(
           result.error.message,
-          httpCodes.BAD_REQUEST.toString(),
+          httpCodes.BAD_REQUEST,
           result.error,
           true
         );

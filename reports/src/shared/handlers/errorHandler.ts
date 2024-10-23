@@ -7,6 +7,7 @@ import { getJsonError } from '@app/utils/index.js';
 
 class ErrorHandler {
   handle(err: any, responseStream: Response) {
+    this.log(err);
     if (err instanceof AppError) {
       if (err instanceof HttpError) {
         return responseStream
@@ -40,6 +41,10 @@ class ErrorHandler {
           )
         )
       );
+  }
+
+  log(err: Error) {
+    console.error(err);
   }
 }
 

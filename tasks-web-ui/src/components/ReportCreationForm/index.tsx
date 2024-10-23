@@ -39,8 +39,8 @@ export default function ReportCreationForm() {
     const filterOptions: TaskFindOptions = {
       where: {
         dueTo: {
-          start: startDate,
-          end: endDate,
+          start: new Date(startDate).toISOString(),
+          end: new Date(endDate).toISOString(),
         },
         /* @ts-expect-error to simplify code */
         status: statuses,
