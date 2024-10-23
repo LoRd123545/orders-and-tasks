@@ -26,7 +26,12 @@ const findOne = async (req: Request, res: Response, next: NextFunction) => {
     const product = await productsService.findOne(id);
 
     if (!product) {
-      throw new HttpError('Order not found!', httpCodes.NOT_FOUND, null, true);
+      throw new HttpError(
+        'Product not found!',
+        httpCodes.NOT_FOUND,
+        null,
+        true
+      );
     }
 
     res.json(product);
@@ -54,7 +59,12 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     const affectedCount = await productsService.update(id, newProduct);
 
     if (affectedCount === 0) {
-      throw new HttpError('Order not found!', httpCodes.NOT_FOUND, null, true);
+      throw new HttpError(
+        'Product not found!',
+        httpCodes.NOT_FOUND,
+        null,
+        true
+      );
     }
 
     res.sendStatus(httpCodes.CREATED_RESOURCE);
@@ -70,7 +80,12 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     const removedCount = await productsService.remove(id);
 
     if (removedCount === 0) {
-      throw new HttpError('Order not found!', httpCodes.NOT_FOUND, null, true);
+      throw new HttpError(
+        'Product not found!',
+        httpCodes.NOT_FOUND,
+        null,
+        true
+      );
     }
 
     res.sendStatus(httpCodes.OK);

@@ -96,26 +96,26 @@ const create = async (report: CreateReportDto): Promise<Report> => {
 const update = async (
   id: string,
   newReport: UpdateReportDto
-): Promise<null> => {
+): Promise<number> => {
   try {
-    await ReportModel.update(newReport, {
+    const [affectedCount] = await ReportModel.update(newReport, {
       where: { id },
     });
 
-    return null;
+    return affectedCount;
   } catch (err) {
     const message = 'Failed to update report';
     throw new DatabaseError(message, '', err, true);
   }
 };
 
-const remove = async (id: string): Promise<null> => {
+const remove = async (id: string): Promise<number> => {
   try {
-    await ReportModel.destroy({
+    const removedCount = await ReportModel.destroy({
       where: { id },
     });
 
-    return null;
+    return removedCount;
   } catch (err) {
     const message = 'Failed to remove report';
     throw new DatabaseError(message, '', err, true);

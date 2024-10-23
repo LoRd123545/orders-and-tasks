@@ -38,21 +38,20 @@ const app = express();
 const server = createServer(app);
 
 // middleware
-app.use(middleware.logUrls);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/healthcheck', (req, res) => {
   res.sendStatus(httpCodes.EMPTY_RESPONE);
-})
+});
 
 app.use('/v1', appRouter, middleware.handleErrors);
 
 app.use('*', (req, res) => {
   res.status(httpCodes.NOT_FOUND).json({
-    message: 'What are you looking for bruh'
+    message: 'What are you looking for bruh',
   });
-})
+});
 
 server.listen(PORT, () => {
   console.log(`http server listening on port ${PORT}`);
@@ -63,11 +62,11 @@ const gracefulShutdown = () => {
   server.close(async () => {
     server.closeAllConnections();
     console.log('Closed all connections!');
-    await database.close()
+    await database.close();
     console.log('Closed connection to database!');
     process.exit(0);
   });
-}
+};
 
 process.on('uncaughtException', gracefulShutdown);
 
