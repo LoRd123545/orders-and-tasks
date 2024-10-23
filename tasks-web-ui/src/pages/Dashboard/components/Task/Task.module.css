@@ -1,0 +1,33 @@
+.task {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1em;
+  border: 2px solid #cbd5e1;
+  padding: 0.5em;
+  border-radius: 0.25em;
+  gap: 2em;
+}
+
+.task__props {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.task__name > input {
+  border: none;
+  outline: none;
+}
+
+.task__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task__icon:hover {
+  transform: scale(1.3);
+}
+
+.task__status {
+}

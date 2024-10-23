@@ -1,0 +1,15 @@
+.task-creation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+}
+
+.task-creation-btn {
+  background-color: #16a34a;
+  padding: 0.5em 1em;
+  color: white;
+  border-radius: 5px;
+  width: fit-content;
+}
