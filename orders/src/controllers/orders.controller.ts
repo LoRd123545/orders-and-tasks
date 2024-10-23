@@ -18,6 +18,7 @@ const find = async (req: Request, res: Response, next: NextFunction) => {
 
     if (orders.length === 0) {
       res.sendStatus(httpCodes.EMPTY_RESPONE);
+      return;
     }
 
     res.json(orders);
