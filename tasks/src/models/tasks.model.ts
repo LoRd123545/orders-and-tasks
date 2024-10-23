@@ -178,26 +178,26 @@ const create = async (task: CreateTaskDto): Promise<Task> => {
   }
 };
 
-const update = async (id: string, newTask: UpdateTaskDto): Promise<null> => {
+const update = async (id: string, newTask: UpdateTaskDto): Promise<number> => {
   try {
-    await TaskModel.update(newTask, {
+    const [affectedCount] = await TaskModel.update(newTask, {
       where: { id },
     });
 
-    return null;
+    return affectedCount;
   } catch (err) {
     const message = 'Failed to update task';
     throw new DatabaseError(message, '', err, true);
   }
 };
 
-const remove = async (id: string): Promise<null> => {
+const remove = async (id: string): Promise<number> => {
   try {
-    const result = await TaskModel.destroy({
+    const affectedCount = await TaskModel.destroy({
       where: { id },
     });
 
-    return null;
+    return affectedCount;
   } catch (err) {
     const message = 'Failed to remove task';
     throw new DatabaseError(message, '', err, true);

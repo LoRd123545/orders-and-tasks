@@ -4,9 +4,12 @@ import tasksService from '@app/services/tasks.service.js';
 
 import { httpCodes } from '@app/shared/index.js';
 import { CreateTaskDto } from '@app/types/tasks/CreateTaskDto.js';
+import { HttpError } from '@app/shared/errors/HttpError.js';
 
 const find = async (req: Request, res: Response, next: NextFunction) => {
   const { limit, page, sortBy, orderBy } = req.query;
+
+  console.log(req.query);
 
   try {
     const tasks = await tasksService.find({
@@ -46,6 +49,11 @@ const findOne = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const task = await tasksService.findOne(id);
+
+    if (!task) {
+      throw new HttpError('Task not found!', httpCodes.NOT_FOUND, null, true);
+    }
+
     res.json(task);
   } catch (err) {
     next(err);
@@ -75,7 +83,12 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
   const newTask = req.body;
 
   try {
-    await tasksService.update(id, newTask);
+    const affectedCount = await tasksService.update(id, newTask);
+
+    if (affectedCount === 0) {
+      throw new HttpError('Task not found!', httpCodes.NOT_FOUND, null, true);
+    }
+
     res.sendStatus(httpCodes.CREATED_RESOURCE);
   } catch (err) {
     next(err);
@@ -86,7 +99,12 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
 
   try {
-    await tasksService.remove(id);
+    const affectedCount = await tasksService.remove(id);
+
+    if (affectedCount === 0) {
+      throw new HttpError('Task not found!', httpCodes.NOT_FOUND, null, true);
+    }
+
     res.sendStatus(httpCodes.OK);
   } catch (err) {
     next(err);

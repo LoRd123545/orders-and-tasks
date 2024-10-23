@@ -1,28 +1,58 @@
-import { Response } from "express";
+import { Response } from 'express';
 
-import { AppError, DatabaseError, HttpError, NotFoundError } from '@app/shared/errors/index.js';
-import { httpCodes } from "@app/shared/index.js";
+import {
+  AppError,
+  DatabaseError,
+  HttpError,
+} from '@app/shared/errors/index.js';
+import { httpCodes } from '@app/shared/index.js';
 
-import { getJsonError } from "@app/utils/index.js";
+import { getJsonError } from '@app/utils/index.js';
 
 class ErrorHandler {
-  handle(err: any, responseStream: Response) {
+  handle(err: Error, responseStream: Response) {
+    this.log(err);
+
     if (err instanceof AppError) {
       if (err instanceof HttpError) {
-        return responseStream.status(parseInt(err.code)).json(getJsonError(err));
+        return responseStream
+          .status(parseInt(err.code))
+          .json(getJsonError(err));
       }
 
-      if (err instanceof NotFoundError) {
-        return responseStream.status(httpCodes.NOT_FOUND).json(getJsonError(err));
-      }
-
-      responseStream.status(httpCodes.INTERNAL_SERVER_ERROR).json(getJsonError(new HttpError('Something went wrong', httpCodes.INTERNAL_SERVER_ERROR.toString(), err, true)));
+      return responseStream
+        .status(httpCodes.INTERNAL_SERVER_ERROR)
+        .json(
+          getJsonError(
+            new HttpError(
+              'Something went wrong',
+              httpCodes.INTERNAL_SERVER_ERROR,
+              err,
+              true
+            )
+          )
+        );
     }
+
+    return responseStream
+      .status(httpCodes.INTERNAL_SERVER_ERROR)
+      .json(
+        getJsonError(
+          new HttpError(
+            'Something went wrong',
+            httpCodes.INTERNAL_SERVER_ERROR,
+            err,
+            true
+          )
+        )
+      );
+  }
+
+  log(err: Error) {
+    console.error(err);
   }
 }
 
 const errorHandler = new ErrorHandler();
 
-export {
-  errorHandler
-}
+export { errorHandler };
