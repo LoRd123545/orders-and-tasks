@@ -16,8 +16,6 @@ RUN npm install
 
 COPY . .
 
-USER node
-
 CMD ["npm", "run", "dev"]
 
 # production
