@@ -14,83 +14,49 @@ import { channel } from '@app/index.js';
 const { AMQP_EXCHANGE } = process.env;
 
 const find = async (options: OrderFindOptions): Promise<Order[]> => {
-  try {
-    const orders = await ordersModel.find(options);
-    return orders;
-  } catch (err) {
-    throw err;
-  }
+  const orders = await ordersModel.find(options);
+
+  return orders;
 };
 
-const findOne = async (id: string): Promise<Order> => {
-  try {
-    const order = await ordersModel.findOne(id);
+const findOne = async (id: string): Promise<Order | null> => {
+  const order = await ordersModel.findOne(id);
 
-    if (!order) {
-      const message = 'Order not found!';
-      const cause = `Order with id ${id} not found!`;
-
-      throw new NotFoundError(message, '', cause, true);
-    }
-
-    return order;
-  } catch (err) {
-    throw err;
-  }
+  return order;
 };
 
 const create = async (order: CreateOrderDto): Promise<Order> => {
-  try {
-    const newOrder = await ordersModel.create(order);
+  const newOrder = await ordersModel.create(order);
 
-    const exchange = AMQP_EXCHANGE || 'orders';
-    channel.publish(exchange, '', Buffer.from(JSON.stringify(newOrder)));
+  const exchange = AMQP_EXCHANGE || 'orders';
+  channel.publish(exchange, '', Buffer.from(JSON.stringify(newOrder)));
 
-    return newOrder;
-  } catch (err) {
-    throw err;
-  }
+  return newOrder;
 };
 
-const update = async (id: string, newOrder: UpdateOrderDto): Promise<null> => {
-  try {
-    const order = await ordersModel.findOne(id);
+const update = async (
+  id: string,
+  newOrder: UpdateOrderDto
+): Promise<number> => {
+  const order = await ordersModel.findOne(id);
 
-    if (!order) {
-      const message = 'Order not found!';
-      const cause = `Order with id ${id} not found!`;
-
-      throw new NotFoundError(message, '', cause, true);
-    }
-
-    ordersModel.update(id, {
-      status: newOrder.status || order.status,
-      email: newOrder.email || order.email,
-      billingAddress: newOrder.billingAddress || order.billingAddress,
-    });
-
-    return null;
-  } catch (err) {
-    throw err;
+  if (!order) {
+    return 0;
   }
+
+  const affectedCount = ordersModel.update(id, {
+    status: newOrder.status || order.status,
+    email: newOrder.email || order.email,
+    billingAddress: newOrder.billingAddress || order.billingAddress,
+  });
+
+  return affectedCount;
 };
 
-const remove = async (id: string): Promise<null> => {
-  try {
-    const order = await ordersModel.findOne(id);
+const remove = async (id: string): Promise<number> => {
+  const deletedCount = await ordersModel.remove(id);
 
-    if (!order) {
-      const message = 'Order not found!';
-      const cause = `Order with id ${id} not found!`;
-
-      throw new NotFoundError(message, '', cause, true);
-    }
-
-    ordersModel.remove(id);
-    return null;
-  } catch (err) {
-    throw err;
-  }
+  return deletedCount;
 };
 
 export default {

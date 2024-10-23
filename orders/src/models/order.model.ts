@@ -160,26 +160,29 @@ const create = async (order: CreateOrderDto): Promise<Order> => {
   }
 };
 
-const update = async (id: string, newOrder: UpdateOrderDto): Promise<null> => {
+const update = async (
+  id: string,
+  newOrder: UpdateOrderDto
+): Promise<number> => {
   try {
-    await OrderModel.update(newOrder, {
+    const [affectedCount] = await OrderModel.update(newOrder, {
       where: { id },
     });
 
-    return null;
+    return affectedCount;
   } catch (err) {
     const message = 'Failed to update order';
     throw new DatabaseError(message, '', err, true);
   }
 };
 
-const remove = async (id: string): Promise<null> => {
+const remove = async (id: string): Promise<number> => {
   try {
-    const result = await OrderModel.destroy({
+    const deletedCount = await OrderModel.destroy({
       where: { id },
     });
 
-    return null;
+    return deletedCount;
   } catch (err) {
     const message = 'Failed to remove order';
     throw new DatabaseError(message, '', err, true);

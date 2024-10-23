@@ -41,7 +41,6 @@ const app = express();
 const server = createServer(app);
 
 // middleware
-app.use(middleware.logUrls);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
