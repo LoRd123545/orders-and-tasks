@@ -7,11 +7,9 @@ import {
 
 import ordersModel from '@app/models/order.model.js';
 
-import { NotFoundError } from '@app/shared/errors/index.js';
-
 import { channel } from '@app/index.js';
 
-const { AMQP_EXCHANGE } = process.env;
+const { AMQP_EXCHANGE, EMAIL_API_URL } = process.env;
 
 const find = async (options: OrderFindOptions): Promise<Order[]> => {
   const orders = await ordersModel.find(options);
@@ -27,6 +25,30 @@ const findOne = async (id: string): Promise<Order | null> => {
 
 const create = async (order: CreateOrderDto): Promise<Order> => {
   const newOrder = await ordersModel.create(order);
+  const newOrderStr = JSON.stringify(newOrder);
+
+  const email = {
+    email: newOrder.email,
+    subject: 'Order confirmation',
+    html: `
+      <h1>Order ${newOrder.id}</h1>
+      <div>
+        <span>product ID: ${newOrder.productID}</span><br/>
+        <span>order status: ${newOrder.status}</span><br/>
+        <span>billing address: ${newOrder.billingAddress}</span><br/>
+      </div>
+    `,
+    text: newOrderStr,
+  };
+
+  await fetch(`${EMAIL_API_URL}/v1/emails`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    // @ts-ignore
+    body: JSON.stringify(email),
+  });
 
   const exchange = AMQP_EXCHANGE || 'orders';
   channel.publish(exchange, '', Buffer.from(JSON.stringify(newOrder)));
